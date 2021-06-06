@@ -1,0 +1,35 @@
+name: Update gh-pages Branch
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  update-gh-pages:
+    runs-on: ubuntu-latest
+    steps:
+      # Determine where the gh-pages branch will be checked out
+      - name: Set $GH_PAGES
+        run: echo GH_PAGES=${GITHUB_WORKSPACE}/.gh-pages >> $GITHUB_ENV
+      # Check out the master branch
+      - uses: actions/checkout@v2
+      # Check out the gh-pages branch
+      - uses: actions/checkout@v2
+        with:
+          ref: gh-pages
+          path: ${{ env.GH_PAGES }}
+      # Compile main.js and copy it to the gh-pages checkout
+      - name: Compile JS
+        run: |
+          npm install
+          npm run compile
+          cp index.html main.js ${GH_PAGES}
+      # Commit & push to gh-pages on GitHub
+      - name: Push gh-pages
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git add main.js index.html
+          git commit -m "Regenerate gh-pages from ${GITHUB_SHA}"
+          git push -fq origin gh-pages
+        working-directory: ${{ env.GH_PAGES }}

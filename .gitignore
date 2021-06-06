@@ -1,0 +1,7 @@
+.gh-pages
+.vscode
+main.electron.js
+main.js
+main.js.map
+node_modules
+package-lock.json
