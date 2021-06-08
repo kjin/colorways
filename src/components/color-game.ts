@@ -3,6 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map";
 import { ColorRound } from "../controllers/color-round";
+import { RGBColor } from "../util";
 
 @customElement("color-game")
 export class ColorGame extends LitElement {
@@ -43,6 +44,9 @@ export class ColorGame extends LitElement {
   private scrolling = false;
   private animating = false;
 
+  @property({ attribute: false })
+  private aboutPanelActive = false;
+
   constructor() {
     super();
   }
@@ -62,7 +66,7 @@ export class ColorGame extends LitElement {
   }
 
   iterate(e: CustomEvent) {
-    const { delta } = e.detail as { delta: number[] };
+    const { delta } = e.detail as { delta: RGBColor };
     this.rounds[this.rounds.length - 1].iterate(delta);
     this.scrollingRequested = this.scrolling = false;
     this.forceScrollToBottom();
@@ -160,9 +164,20 @@ export class ColorGame extends LitElement {
             ]}
             ?active=${!currentRound.win}
           ></color-buttons>
-          <control-panel @new-game=${this.startNewGame}></control-panel>
+          <control-panel
+            @new-game=${this.startNewGame}
+            @about=${() => {
+              this.aboutPanelActive = true;
+            }}
+          ></control-panel>
         </div>
       </div>
+      <about-panel
+        .active=${this.aboutPanelActive}
+        @dismissed=${() => {
+          this.aboutPanelActive = false;
+        }}
+      ></about-panel>
     `;
   }
 }

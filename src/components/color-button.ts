@@ -1,7 +1,7 @@
 import { html, css, LitElement } from "lit";
 import { styleMap } from "lit/directives/style-map";
 import { customElement, property } from "lit/decorators.js";
-import { dec2Hex8bit, getBWForColor, lighten } from "../util";
+import { darken, lighten, toCSSColor } from "../util";
 
 @customElement("color-button")
 export class ColorButton extends LitElement {
@@ -32,19 +32,22 @@ export class ColorButton extends LitElement {
   active = false;
 
   render() {
-    let sign = this.intensity > 0 ? "+" : this.intensity < 0 ? "-" : 0;
+    let sign = this.intensity > 0 ? "+" : this.intensity < 0 ? "\u2013" : 0;
     return html`<div
       @click=${this.onClick}
       style=${styleMap({
-        "background-color": `#${lighten(
-          this.delta.map((x) => (x ? 255 : 0)),
-          this.active ? 0 : 0.75
-        )
-          .map(dec2Hex8bit)
-          .join("")}`,
-        color: `#${getBWForColor(this.delta.map((x) => (x ? 255 : 0)))
-          .map(dec2Hex8bit)
-          .join("")}`,
+        "background-color": toCSSColor(
+          lighten(
+            this.delta.map((x) => (x ? 255 : 0)),
+            this.active ? 0 : 0.75
+          )
+        ),
+        color: toCSSColor(
+          lighten(
+            this.delta.map((x) => (x ? 255 : 0)),
+            1
+          )
+        ),
       })}
     >
       ${sign}

@@ -2,7 +2,7 @@ import { html, css, LitElement } from "lit";
 import { styleMap } from "lit/directives/style-map";
 import { customElement, property } from "lit/decorators.js";
 import anime from "animejs";
-import { dec2Hex8bit } from "../util";
+import { dec2Hex8bit, toCSSColor } from "../util";
 
 @customElement("color-cell")
 export class ColorCell extends LitElement {
@@ -51,7 +51,7 @@ export class ColorCell extends LitElement {
   render() {
     return html`<div
       style=${styleMap({
-        "background-color": `#${this.color.map(dec2Hex8bit).join("")}`,
+        "background-color": toCSSColor(this.color),
       })}
     ></div>`;
   }

@@ -2,7 +2,14 @@ import { html, css, LitElement } from "lit";
 import { styleMap } from "lit/directives/style-map";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-import { darken, dec2Hex8bit, invert, lighten } from "../util";
+import {
+  darken,
+  dec2Hex8bit,
+  invert,
+  lighten,
+  RGBColor,
+  toCSSColor,
+} from "../util";
 
 @customElement("color-column")
 export class ColorColumn extends LitElement {
@@ -15,6 +22,7 @@ export class ColorColumn extends LitElement {
       overflow: hidden;
       font-family: "Quicksand";
       font-size: 20px;
+      user-select: none;
     }
     table {
       width: 100%;
@@ -30,7 +38,7 @@ export class ColorColumn extends LitElement {
   @property({ type: Array })
   targetColor = [0, 0, 0];
   @property({ type: Array })
-  iterations: number[][] = [[0, 0, 0]];
+  iterations: RGBColor[] = [[0, 0, 0]];
   @property({ type: Boolean })
   active = true;
   @property({ type: Boolean })
@@ -44,9 +52,7 @@ export class ColorColumn extends LitElement {
     return html`<div
       style=${styleMap({
         "background-color": this.active
-          ? `#${lighten(invert(this.targetColor), 0.75)
-              .map(dec2Hex8bit)
-              .join("")}`
+          ? toCSSColor(lighten(invert(this.targetColor), 0.75))
           : "white",
       })}
     >
@@ -60,9 +66,7 @@ export class ColorColumn extends LitElement {
       <table
         style=${styleMap({
           color: this.active
-            ? `#${darken(invert(this.targetColor), 0.5)
-                .map(dec2Hex8bit)
-                .join("")}`
+            ? toCSSColor(darken(invert(this.targetColor), 0.5))
             : "gray",
         })}
       >
