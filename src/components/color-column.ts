@@ -2,14 +2,7 @@ import { html, css, LitElement } from "lit";
 import { styleMap } from "lit/directives/style-map";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-import {
-  darken,
-  dec2Hex8bit,
-  invert,
-  lighten,
-  RGBColor,
-  toCSSColor,
-} from "../util";
+import { darken, invert, lighten, RGBColor, toCSSColor } from "../util";
 
 @customElement("color-column")
 export class ColorColumn extends LitElement {
@@ -52,7 +45,7 @@ export class ColorColumn extends LitElement {
     return html`<div
       style=${styleMap({
         "background-color": this.active
-          ? toCSSColor(lighten(invert(this.targetColor), 0.75))
+          ? toCSSColor(lighten(invert(this.targetColor), 0.5))
           : "white",
       })}
     >
@@ -71,7 +64,12 @@ export class ColorColumn extends LitElement {
         })}
       >
         <td id="game-title">
-          Game ${this.gameId}${this.win ? ` \ud83d\udc51` : " "}
+          Game
+          ${this.gameId}${this.win
+            ? this.optimalMoves === this.iterations.length - 1
+              ? ` \ud83d\udc51`
+              : " \u2713"
+            : " "}
         </td>
         <td id="game-status">
           ${this.win

@@ -15,6 +15,7 @@ export class Popup extends LitElement {
       right: 0;
       opacity: 0;
       pointer-events: none;
+      touch-action: none;
     }
     #outer-div {
       position: absolute;
@@ -90,6 +91,7 @@ export class Popup extends LitElement {
           )}
         style=${styleMap({
           "pointer-events": this.active ? "auto" : "none",
+          "touch-action": this.active ? "auto" : "none",
         })}
       >
         <div

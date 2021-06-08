@@ -1,7 +1,9 @@
 export type RGBColor = number[];
 
-export function averageColor(color: RGBColor) {
-  return color.reduce((a, b) => a + b, 0) / 3;
+export function intensity(color: RGBColor) {
+  return (
+    [0.2126, 0.7152, 0.0722].reduce((a, b, i) => a + b * color[i], 0) / 256
+  );
 }
 
 export function invert(color: RGBColor): RGBColor {
@@ -11,13 +13,12 @@ export function invert(color: RGBColor): RGBColor {
 export function lighten(
   color: RGBColor,
   amount: number,
-  darkenAt = 256
+  darkenAt = 2
 ): RGBColor {
-  const result = color.map((x) => 255 - Math.ceil((255 - x) * (1 - amount)));
-  if (averageColor(result) >= darkenAt) {
+  if (intensity(color) >= darkenAt) {
     return darken(color, amount);
   }
-  return result;
+  return color.map((x) => 255 - Math.ceil((255 - x) * (1 - amount)));
 }
 
 export function darken(
@@ -25,11 +26,10 @@ export function darken(
   amount: number,
   lightenAt = -1
 ): RGBColor {
-  const result = color.map((x) => Math.floor(x * (1 - amount)));
-  if (averageColor(result) <= lightenAt) {
+  if (intensity(color) <= lightenAt) {
     return lighten(color, amount);
   }
-  return result;
+  return color.map((x) => Math.floor(x * (1 - amount)));
 }
 
 export function dec2Hex8bit(num: number) {
