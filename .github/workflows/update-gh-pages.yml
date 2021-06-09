@@ -2,7 +2,8 @@ name: Update gh-pages Branch
 
 on:
   push:
-    branches: [ master ]
+    tags:
+      - v*
 
 jobs:
   update-gh-pages:
@@ -26,10 +27,5 @@ jobs:
           cp index.html main.js ${GH_PAGES}
       # Commit & push to gh-pages on GitHub
       - name: Push gh-pages
-        run: |
-          git config user.name github-actions
-          git config user.email github-actions@github.com
-          git add main.js index.html
-          git commit -m "Regenerate gh-pages from ${GITHUB_SHA}"
-          git push -fq origin gh-pages
+        run: ${GITHUB_WORKSPACE}/scripts/push-to-gh-pages.sh
         working-directory: ${{ env.GH_PAGES }}
