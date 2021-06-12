@@ -9,21 +9,17 @@ export class MetaControls extends LitElement {
 
   static styles = css`
     :host {
-      justify-content: flex-end;
+      flex-basis: 60px;
+      width: 100%;
     }
   `;
 
   render() {
-    return html`<cw-container .width=${400} .height=${50}>
-      <cw-button
-        @click-down=${() => trigger(this, "new-game")}
-        .color=${this.buttonColor}
-      >
-        New Game
-      </cw-button>
+    return html`<cw-container .height=${50}>
       <cw-button
         @click-down=${() => trigger(this, "popup-menu")}
         .color=${this.buttonColor}
+        .active=${true}
       >
         ${"\u2630"}
       </cw-button>

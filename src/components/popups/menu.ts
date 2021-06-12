@@ -39,6 +39,7 @@ export class Menu extends LitElement {
         ><cw-button
           @click-down=${() => trigger(this, "new-game")}
           .color=${this.buttonColor}
+          .active=${true}
           >New Game</cw-button
         ></cw-container
       >
@@ -46,6 +47,7 @@ export class Menu extends LitElement {
         ><cw-button
           @click-down=${() => trigger(this, "popup-options")}
           .color=${this.buttonColor}
+          .active=${true}
           >Options</cw-button
         ></cw-container
       >
@@ -53,6 +55,7 @@ export class Menu extends LitElement {
         ><cw-button
           @click-down=${() => trigger(this, "popup-help")}
           .color=${this.buttonColor}
+          .active=${true}
           >Help</cw-button
         ></cw-container
       >

@@ -143,7 +143,9 @@ export class Cell extends LitElement {
             style="margin-top: 60px; transform: scale(0.75)"
           >
             <cw-container .padding=${8}
-              >▼${spacer}<cw-button .color=${this.incrementedColor}
+              >▼${spacer}<cw-button
+                .color=${this.incrementedColor}
+                .active=${true}
                 ><slot></slot></cw-button
             ></cw-container>
           </div>`

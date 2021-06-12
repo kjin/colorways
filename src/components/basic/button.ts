@@ -14,7 +14,6 @@ export class Button extends LitElement {
   static styles = css`
     #button {
       display: flex;
-      flex-grow: 1;
       height: 100%;
       padding-left: 8px;
       padding-right: 8px;
@@ -37,7 +36,7 @@ export class Button extends LitElement {
   @property({ type: Array })
   color: RGBColor = [0, 0, 0];
   @property({ type: Boolean })
-  active = true;
+  active = false;
   @property({ type: Number })
   maxWidth = Infinity;
 

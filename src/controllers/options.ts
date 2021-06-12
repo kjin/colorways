@@ -7,11 +7,16 @@ export class GameOptions implements ReactiveController {
   difficulty = new OptionValue(
     this,
     [
-      ["Easy", 3],
-      ["Normal", 6],
+      ["Easy", 6],
+      ["Normal", 11],
       ["Hard", 16],
     ],
     "Normal"
+  );
+  linearOrLog = new OptionValue<(x: number) => number>(
+    this,
+    [["Linear", (x) => x]],
+    "Linear"
   );
   changesMade = false;
   revision = 0;

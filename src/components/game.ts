@@ -27,10 +27,14 @@ export class Game extends LitElement {
     #top::-webkit-scrollbar {
       display: none;
     }
-    .controls {
-      padding: 5px;
+    #controls-layer-1 {
       display: flex;
       justify-content: space-between;
+      padding: 5px;
+    }
+    #controls-layer-2 {
+      padding: 0px;
+      position: absolute;
     }
   `;
 
@@ -169,7 +173,7 @@ export class Game extends LitElement {
           <!-- A zero-height div that is always the last element in #top. -->
           <div style=${styleMap({ height: "0px" })}></div>
         </div>
-        <div class="controls">
+        <div id="controls-layer-1">
           <cw-primary-controls
             @color-incremented=${this.iterate}
             .moves=${this.moves.map((move) => ({
@@ -183,11 +187,16 @@ export class Game extends LitElement {
             ?active=${!currentRound.win}
           ></cw-primary-controls>
           <cw-meta-controls
-            @new-game=${this.startNewGame}
             @popup-menu=${() => {
               this.menuActive = true;
             }}
           ></cw-meta-controls>
+          <div id="controls-layer-2">
+            <cw-terminal-controls
+              @new-game=${this.startNewGame}
+              ?active=${currentRound.win}
+            ></cw-terminal-controls>
+          </div>
         </div>
       </div>
       <cw-menu

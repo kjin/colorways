@@ -10,3 +10,4 @@ import "./components/popups/menu";
 import "./components/popups/options";
 import "./components/primary-controls";
 import "./components/round";
+import "./components/terminal-controls";
