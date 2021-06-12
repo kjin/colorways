@@ -1,4 +1,8 @@
+import convert from "color-convert";
+
 export type GameColor = number[];
+
+export type HSVColor = [number, number, number];
 
 export type RGBColor = [number, number, number];
 
@@ -45,6 +49,10 @@ export function intensity(color: RGBColor) {
   );
 }
 
+export function hsvToRGB(color: HSVColor): RGBColor {
+  return convert.hsv.rgb(color);
+}
+
 export function invert(color: RGBColor): RGBColor {
   return color.map((x) => 255 - x) as RGBColor;
 }
@@ -61,14 +69,14 @@ export function legibleDarken(color: RGBColor): RGBColor {
   if (intensity(color) < 0.2) {
     return legibleLighten(color);
   }
-  return darken(color, 0.8);
+  return darken(color, 0.75);
 }
 
 export function legibleLighten(color: RGBColor): RGBColor {
   if (intensity(color) > 0.8) {
     return legibleDarken(color);
   }
-  return lighten(color, 0.8);
+  return lighten(color, 0.75);
 }
 
 export function dec2Hex8bit(num: number) {

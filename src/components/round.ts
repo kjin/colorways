@@ -23,7 +23,7 @@ export class Round extends LitElement {
       border-radius: 5px;
       overflow: hidden;
       font-family: "Quicksand";
-      font-size: 20px;
+      font-size: 18px;
       user-select: none;
     }
     table {
@@ -47,6 +47,8 @@ export class Round extends LitElement {
   active = true;
   @property({ type: Boolean })
   win = false;
+  @property()
+  difficulty: string = "";
   @property({ type: Number })
   gameId = 0;
   @property({ type: Number })
@@ -88,8 +90,8 @@ export class Round extends LitElement {
         })}
       >
         <td id="game-title">
-          Game
-          ${this.gameId}${this.win
+          Game ${this.gameId} -
+          ${this.difficulty}${this.win
             ? this.optimalMoves === this.iterations.length - 1
               ? ` \ud83d\udc51`
               : " \u2713"

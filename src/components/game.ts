@@ -3,7 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map";
 import { ColorRound } from "../controllers/color-round";
-import { ColorSpaceOptions, makeMove, Move, toRGB } from "../util/color";
+import { GameOptions } from "../controllers/options";
+import { makeMove, Move, toRGB } from "../util/color";
 
 @customElement("cw-game")
 export class Game extends LitElement {
@@ -27,13 +28,14 @@ export class Game extends LitElement {
       display: none;
     }
     .controls {
+      padding: 5px;
       display: flex;
       justify-content: space-between;
     }
   `;
 
   private rounds: ColorRound[] = [];
-  private colorSpace: ColorSpaceOptions = { steps: 6 };
+  private gameOptions: GameOptions = new GameOptions(this);
   private moves: Array<Move> = [
     [1, 0, 0],
     [0, 1, 0],
@@ -50,7 +52,11 @@ export class Game extends LitElement {
   private animating = false;
 
   @property({ attribute: false })
-  private aboutPanelActive = false;
+  private menuActive = false;
+  @property({ attribute: false })
+  private optionsActive = false;
+  @property({ attribute: false })
+  private helpActive = false;
 
   constructor() {
     super();
@@ -65,7 +71,7 @@ export class Game extends LitElement {
     if (this.rounds.length > 0) {
       this.rounds[this.rounds.length - 1].active = false;
     }
-    this.rounds = [...this.rounds, new ColorRound(this, this.colorSpace)];
+    this.rounds = [...this.rounds, new ColorRound(this, this.gameOptions)];
     this.scrollingRequested = this.scrolling = false;
     this.forceScrollToBottom();
   }
@@ -154,6 +160,7 @@ export class Game extends LitElement {
                 )}
                 .moves=${round.moves}
                 .active=${round.active}
+                difficulty=${round.difficulty}
                 .gameId=${i + 1}
                 .win=${round.win}
                 .optimalMoves=${round.optimalMoves}
@@ -163,32 +170,65 @@ export class Game extends LitElement {
           <div style=${styleMap({ height: "0px" })}></div>
         </div>
         <div class="controls">
-          <cw-incrementors
+          <cw-primary-controls
             @color-incremented=${this.iterate}
             .moves=${this.moves.map((move) => ({
               ...move,
               valid: !!makeMove(
                 currentRound.iterations[currentRound.iterations.length - 1],
                 move,
-                this.colorSpace
+                currentRound.colorSpace
               ),
             }))}
             ?active=${!currentRound.win}
-          ></cw-incrementors>
-          <cw-options
+          ></cw-primary-controls>
+          <cw-meta-controls
             @new-game=${this.startNewGame}
-            @about=${() => {
-              this.aboutPanelActive = true;
+            @popup-menu=${() => {
+              this.menuActive = true;
             }}
-          ></cw-options>
+          ></cw-meta-controls>
         </div>
       </div>
-      <cw-about
-        .active=${this.aboutPanelActive}
+      <cw-menu
+        .active=${this.menuActive}
         @dismissed=${() => {
-          this.aboutPanelActive = false;
+          this.menuActive = false;
+          if (this.gameOptions.changesMade) {
+            this.gameOptions.changesMade = false;
+            this.startNewGame();
+          }
         }}
-      ></cw-about>
+        @new-game=${() => {
+          this.menuActive = false;
+          this.gameOptions.changesMade = false;
+          this.startNewGame();
+        }}
+        @popup-options=${() => {
+          this.menuActive = false;
+          this.optionsActive = true;
+        }}
+        @popup-help=${() => {
+          this.menuActive = false;
+          this.helpActive = true;
+        }}
+      ></cw-menu>
+      <cw-options
+        .active=${this.optionsActive}
+        .gameOptions=${this.gameOptions}
+        .revision=${this.gameOptions.revision}
+        @dismissed=${() => {
+          this.optionsActive = false;
+          this.menuActive = true;
+        }}
+      ></cw-options>
+      <cw-help
+        .active=${this.helpActive}
+        @dismissed=${() => {
+          this.helpActive = false;
+          this.menuActive = true;
+        }}
+      ></cw-help>
     `;
   }
 }

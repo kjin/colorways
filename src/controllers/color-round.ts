@@ -5,20 +5,23 @@ import {
   GameColor,
   Move,
 } from "../util/color";
+import { GameOptions } from "./options";
 
 export class ColorRound implements ReactiveController {
   host: ReactiveControllerHost;
   targetColor = [0, 0, 0];
   iterations: GameColor[] = [[0, 0, 0]];
   moves: Move[] = [];
+  difficulty: string = "";
   colorSpace: ColorSpaceOptions;
   optimalMoves = 0;
   win: boolean = false;
   active: boolean = false;
 
-  constructor(host: ReactiveControllerHost, colorSpace: ColorSpaceOptions) {
+  constructor(host: ReactiveControllerHost, gameOptions: GameOptions) {
     (this.host = host).addController(this);
-    this.colorSpace = colorSpace;
+    this.colorSpace = gameOptions.getColorSpace();
+    this.difficulty = gameOptions.difficulty.stringValue;
     this.startGame();
   }
 

@@ -22,7 +22,6 @@ export class Cell extends LitElement {
       opacity: 0;
       margin: 8px;
       font-size: 16px;
-      font-weight: bold;
     }
   `;
 
@@ -143,11 +142,10 @@ export class Cell extends LitElement {
             id="incremented"
             style="margin-top: 60px; transform: scale(0.75)"
           >
-            <cw-container
-              >${spacer}▼${spacer}<cw-button .color=${this.incrementedColor}
+            <cw-container .padding=${8}
+              >▼${spacer}<cw-button .color=${this.incrementedColor}
                 ><slot></slot></cw-button
-              >${spacer}</cw-container
-            >
+            ></cw-container>
           </div>`
         : ""}
     </div>`;

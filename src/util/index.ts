@@ -12,3 +12,7 @@ export const trigger = (self: LitElement, type: string, data: any = {}) => {
 
 export const getArrow = (direction: number) =>
   direction > 0 ? "+" : direction < 0 ? "\u2013" : "";
+
+export function capitalize(str: string) {
+  return `${str[0].toUpperCase()}${str.slice(1)}`;
+}

@@ -4,8 +4,8 @@ import { repeat } from "lit/directives/repeat";
 import { getArrow, trigger } from "../util";
 import { GameColor, Move, toRGB } from "../util/color";
 
-@customElement("cw-incrementors")
-export class Incrementors extends LitElement {
+@customElement("cw-primary-controls")
+export class PrimaryControls extends LitElement {
   static styles = css`
     :host {
       flex-grow: 1;

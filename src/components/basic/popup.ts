@@ -2,6 +2,8 @@ import anime from "animejs";
 import { css, html, LitElement } from "lit";
 import { styleMap } from "lit-html/directives/style-map";
 import { customElement, property } from "lit/decorators.js";
+import { legibleLighten, RGBColor, toCSSColor } from "../../util/color";
+import { ColorBuilder } from "../../util/color-builder";
 
 @customElement("cw-popup")
 export class Popup extends LitElement {
@@ -37,8 +39,8 @@ export class Popup extends LitElement {
     }
   `;
 
-  @property()
-  color: string = "white";
+  @property({ type: Array })
+  color: RGBColor = ColorBuilder.white;
   @property({ type: Boolean })
   active: boolean = false;
   private initialized = false;
@@ -81,6 +83,8 @@ export class Popup extends LitElement {
   }
 
   render() {
+    const backgroundColor = this.color;
+    const textColor = legibleLighten(backgroundColor);
     return html`
       <div id="curtain"></div>
       <div
@@ -97,7 +101,8 @@ export class Popup extends LitElement {
         <div
           id="panel"
           style=${styleMap({
-            "background-color": this.color,
+            "background-color": toCSSColor(backgroundColor),
+            color: toCSSColor(textColor),
           })}
           @click=${(e: MouseEvent) => e.stopPropagation()}
         >

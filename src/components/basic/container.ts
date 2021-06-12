@@ -10,8 +10,6 @@ export class Container extends LitElement {
       display: flex;
       align-items: stretch;
       margin: 1px;
-      padding-top: 8px;
-      padding-bottom: 8px;
       border-radius: 5px;
       font-family: "Quicksand";
       font-size: 18px;
@@ -27,6 +25,8 @@ export class Container extends LitElement {
   width: number = Infinity;
   @property({ type: Number })
   height: number = Infinity;
+  @property({ type: Number })
+  padding: number = 0;
 
   render() {
     const textColor = legibleLighten(this.color);
@@ -36,6 +36,7 @@ export class Container extends LitElement {
         color: toCSSColor(textColor),
         ...(isFinite(this.width) ? { "max-width": `${this.width}px` } : {}),
         ...(isFinite(this.height) ? { height: `${this.height}px` } : {}),
+        padding: `${this.padding}px`,
       })}
     >
       <slot></slot>

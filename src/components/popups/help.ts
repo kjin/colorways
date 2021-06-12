@@ -1,31 +1,26 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { ColorBuilder } from "../../util/color-builder";
 
-@customElement("cw-about")
-export class About extends LitElement {
+@customElement("cw-help")
+export class Help extends LitElement {
+  private color = ColorBuilder.cyan.faint.midtone;
+
   static styles = css`
     :host {
       background-color: black;
-      color: cadetblue;
       user-select: none;
+      color: cadetblue;
     }
     h1,
     h2,
-    p,
-    b {
+    p {
       margin: 5px;
     }
     h1 {
       text-align: center;
       font-size: 40px;
       color: lightcyan;
-    }
-    small {
-      font-size: 12px;
-    }
-    span {
-      border-radius: 4px;
-      padding: 2px;
     }
     .white {
       color: white;
@@ -36,11 +31,8 @@ export class About extends LitElement {
   active = true;
 
   render() {
-    return html` <cw-popup color="paleturquoise" .active=${this.active}>
-      <h1>
-        Colorways
-        <small><a href="https://github.com/kjin/colorways">v0.0.1</a></small>
-      </h1>
+    return html` <cw-popup .color=${this.color} .active=${this.active}>
+      <h1>Help</h1>
       <h2>Objective</h2>
       <p>
         Use the color adjustment buttons to adjust the current color (top) to
