@@ -69,7 +69,7 @@ export class Round extends LitElement {
           let incrementedColor = [0, 0, 0] as RGBColor;
           let symbol = "?";
           if (this.moves.length > i) {
-            incrementedColor = toRGB(this.moves[i].delta, { steps: 2 });
+            incrementedColor = toRGB(this.moves[i].delta);
             symbol = getArrow(this.moves[i].direction);
           }
           return html`<cw-cell

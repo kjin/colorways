@@ -13,11 +13,17 @@ export interface Move {
 
 export interface ColorSpaceOptions {
   steps: number;
+  scaling: (x: number) => number;
 }
 
-export function toRGB(color: GameColor, options: ColorSpaceOptions): RGBColor {
+const identity = (x: number) => x;
+
+export function toRGB(
+  color: GameColor,
+  options: ColorSpaceOptions = { steps: 2, scaling: identity }
+): RGBColor {
   return color.map((x) =>
-    Math.floor((x / (options.steps - 1)) * 255)
+    Math.floor(options.scaling(x / (options.steps - 1)) * 255)
   ) as RGBColor;
 }
 

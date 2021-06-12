@@ -33,7 +33,7 @@ export class Menu extends LitElement {
     return html` <cw-popup .color=${this.color} .active=${this.active}>
       <h1>
         Colorways
-        <small><a href="https://github.com/kjin/colorways">v0.0.2</a></small>
+        <small><a href="https://github.com/kjin/colorways">v0.0.3</a></small>
       </h1>
       <cw-container .height=${40} .color=${this.color}
         ><cw-button

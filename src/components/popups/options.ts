@@ -52,6 +52,19 @@ export class Options extends LitElement {
             >`
         )}
       </cw-container>
+      <h2>Color Scale</h2>
+      <cw-container .height=${40} .color=${this.color}>
+        ${repeat(
+          gameOptions.linearOrLog.allowedStringValues,
+          (value) =>
+            html`<cw-button
+              .color=${this.buttonColor}
+              @click-down=${() => (gameOptions.linearOrLog.stringValue = value)}
+              .active=${gameOptions.linearOrLog.stringValue !== value}
+              >${value}</cw-button
+            >`
+        )}
+      </cw-container>
     </cw-popup>`;
   }
 }

@@ -53,7 +53,7 @@ export class PrimaryControls extends LitElement {
   render() {
     const buttons = this.moves.map(
       (move) => html`<cw-button
-        .color=${toRGB(move.delta, { steps: 2 })}
+        .color=${toRGB(move.delta)}
         ?active=${this.active && move.valid}
         @click-down=${() =>
           this.active && trigger(this, "color-incremented", move)}

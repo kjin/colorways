@@ -11,11 +11,14 @@ export class GameOptions implements ReactiveController {
       ["Normal", 11],
       ["Hard", 16],
     ],
-    "Normal"
+    "Easy"
   );
   linearOrLog = new OptionValue<(x: number) => number>(
     this,
-    [["Linear", (x) => x]],
+    [
+      ["Linear", (x) => x],
+      ["Log", (x) => 1 - Math.log2(2 - x)],
+    ],
     "Linear"
   );
   changesMade = false;
@@ -30,6 +33,7 @@ export class GameOptions implements ReactiveController {
   getColorSpace(): ColorSpaceOptions {
     return {
       steps: this.difficulty.internalValue,
+      scaling: this.linearOrLog.internalValue,
     };
   }
 }
