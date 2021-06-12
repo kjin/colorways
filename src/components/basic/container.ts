@@ -10,8 +10,6 @@ export class Container extends LitElement {
       display: flex;
       align-items: stretch;
       margin: 1px;
-      /* padding-left: 8px;
-      padding-right: 8px; */
       padding-top: 8px;
       padding-bottom: 8px;
       border-radius: 5px;

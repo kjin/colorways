@@ -28,6 +28,10 @@ export class Cell extends LitElement {
 
   @property({ type: Array })
   color: RGBColor = [0, 0, 0];
+  @property({ type: Array })
+  incrementedColor: RGBColor = [0, 0, 0];
+  @property({ type: Boolean })
+  showIncremented = false;
   @property({ attribute: false })
   showHex = false;
 
@@ -38,8 +42,8 @@ export class Cell extends LitElement {
       this.initialized = true;
       anime({
         targets: this.renderRoot.querySelector("div"),
-        height: "50px",
-        duration: 500,
+        height: "40px",
+        duration: 800,
         changeBegin: () => {
           this.dispatchEvent(
             new CustomEvent("animation-started", {
@@ -64,6 +68,27 @@ export class Cell extends LitElement {
             })
           );
         },
+      });
+      anime({
+        targets: this.renderRoot.querySelector("#incremented"),
+        translateX: "40px",
+        opacity: 0,
+        duration: 0,
+        easing: "linear",
+      });
+      anime({
+        targets: this.renderRoot.querySelector("#incremented"),
+        translateX: "0px",
+        delay: 100,
+        duration: 550,
+        easing: "easeOutBounce",
+      });
+      anime({
+        targets: this.renderRoot.querySelector("#incremented"),
+        opacity: 1,
+        delay: 100,
+        duration: 550,
+        easing: "linear",
       });
     }
     if (this.showHex) {
@@ -113,9 +138,18 @@ export class Cell extends LitElement {
         })}
         >${toCSSColor(this.color)}</span
       >
-      <cw-container
-        >${spacer}+${spacer}<cw-button>?</cw-button>${spacer}</cw-container
-      >
+      ${this.showIncremented
+        ? html`<div
+            id="incremented"
+            style="margin-top: 60px; transform: scale(0.75)"
+          >
+            <cw-container
+              >${spacer}▼${spacer}<cw-button .color=${this.incrementedColor}
+                ><slot></slot></cw-button
+              >${spacer}</cw-container
+            >
+          </div>`
+        : ""}
     </div>`;
   }
 }

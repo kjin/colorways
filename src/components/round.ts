@@ -2,7 +2,16 @@ import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map";
-import { darken, invert, lighten, RGBColor, toCSSColor } from "../util/color";
+import { getArrow } from "../util";
+import {
+  darken,
+  invert,
+  lighten,
+  Move,
+  RGBColor,
+  toCSSColor,
+  toRGB,
+} from "../util/color";
 
 @customElement("cw-round")
 export class Round extends LitElement {
@@ -31,7 +40,9 @@ export class Round extends LitElement {
   @property({ type: Array })
   targetColor: RGBColor = [0, 0, 0];
   @property({ type: Array })
-  iterations: RGBColor[] = [[0, 0, 0]];
+  iterations: RGBColor[] = [];
+  @property({ type: Array })
+  moves: Move[] = [];
   @property({ type: Boolean })
   active = true;
   @property({ type: Boolean })
@@ -52,7 +63,20 @@ export class Round extends LitElement {
       ${repeat(
         this.iterations,
         // (_, i) => this.iterations.length - i,
-        (x) => html`<cw-cell .color=${x}></cw-cell>`
+        (x, i) => {
+          let incrementedColor = [0, 0, 0] as RGBColor;
+          let symbol = "?";
+          if (this.moves.length > i) {
+            incrementedColor = toRGB(this.moves[i].delta, { steps: 2 });
+            symbol = getArrow(this.moves[i].direction);
+          }
+          return html`<cw-cell
+            .color=${x}
+            .showIncremented=${!this.win || i < this.iterations.length - 1}
+            .incrementedColor=${incrementedColor}
+            >${symbol}</cw-cell
+          >`;
+        }
       )}
       <hr />
       <cw-cell id="target-color" .color=${this.targetColor}></cw-cell>

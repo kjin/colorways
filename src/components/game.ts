@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map";
 import { ColorRound } from "../controllers/color-round";
-import { GameColor, RGBColor } from "../util/color";
+import { ColorSpaceOptions, makeMove, Move, toRGB } from "../util/color";
 
 @customElement("cw-game")
 export class Game extends LitElement {
@@ -32,10 +32,19 @@ export class Game extends LitElement {
     }
   `;
 
-  @property({ type: Number })
-  interval = 1;
-
   private rounds: ColorRound[] = [];
+  private colorSpace: ColorSpaceOptions = { steps: 6 };
+  private moves: Array<Move> = [
+    [1, 0, 0],
+    [0, 1, 0],
+    [0, 0, 1],
+  ].flatMap((delta) =>
+    [-1, 1].map((direction) => ({
+      delta,
+      direction,
+    }))
+  );
+
   private scrollingRequested = false;
   private scrolling = false;
   private animating = false;
@@ -56,14 +65,13 @@ export class Game extends LitElement {
     if (this.rounds.length > 0) {
       this.rounds[this.rounds.length - 1].active = false;
     }
-    this.rounds = [...this.rounds, new ColorRound(this, this.interval)];
+    this.rounds = [...this.rounds, new ColorRound(this, this.colorSpace)];
     this.scrollingRequested = this.scrolling = false;
     this.forceScrollToBottom();
   }
 
   iterate(e: CustomEvent) {
-    const { delta } = e.detail as { delta: GameColor };
-    this.rounds[this.rounds.length - 1].iterate(delta);
+    this.rounds[this.rounds.length - 1].iterate(e.detail as Move);
     this.scrollingRequested = this.scrolling = false;
     this.forceScrollToBottom();
     e.stopPropagation();
@@ -140,8 +148,11 @@ export class Game extends LitElement {
             // (_, i) => this.rounds.length - i,
             (round, i) =>
               html`<cw-round
-                .targetColor=${round.targetColor as RGBColor}
-                .iterations=${round.iterations as RGBColor[]}
+                .targetColor=${toRGB(round.targetColor, round.colorSpace)}
+                .iterations=${round.iterations.map((iteration) =>
+                  toRGB(iteration, round.colorSpace)
+                )}
+                .moves=${round.moves}
                 .active=${round.active}
                 .gameId=${i + 1}
                 .win=${round.win}
@@ -154,10 +165,14 @@ export class Game extends LitElement {
         <div class="controls">
           <cw-incrementors
             @color-incremented=${this.iterate}
-            interval=${this.interval}
-            .current=${currentRound.iterations[
-              currentRound.iterations.length - 1
-            ]}
+            .moves=${this.moves.map((move) => ({
+              ...move,
+              valid: !!makeMove(
+                currentRound.iterations[currentRound.iterations.length - 1],
+                move,
+                this.colorSpace
+              ),
+            }))}
             ?active=${!currentRound.win}
           ></cw-incrementors>
           <cw-options
