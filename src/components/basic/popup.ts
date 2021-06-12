@@ -3,7 +3,7 @@ import { css, html, LitElement } from "lit";
 import { styleMap } from "lit-html/directives/style-map";
 import { customElement, property } from "lit/decorators.js";
 
-@customElement("pop-up")
+@customElement("cw-popup")
 export class Popup extends LitElement {
   static styles = css`
     #curtain {

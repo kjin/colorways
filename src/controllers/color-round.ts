@@ -1,10 +1,10 @@
-import { computeMoves, RGBColor } from "../util";
 import { ReactiveController, ReactiveControllerHost } from "lit";
+import { computeMoves, GameColor } from "../util/color";
 
 export class ColorRound implements ReactiveController {
   host: ReactiveControllerHost;
   targetColor = [0, 0, 0];
-  iterations: RGBColor[] = [[0, 0, 0]];
+  iterations: GameColor[] = [[0, 0, 0]];
   optimalMoves = 0;
   win: boolean = false;
   active: boolean = false;
@@ -33,7 +33,7 @@ export class ColorRound implements ReactiveController {
     this.host.requestUpdate();
   }
 
-  iterate(delta: RGBColor) {
+  iterate(delta: GameColor) {
     const newColor = [...this.iterations[this.iterations.length - 1]];
     for (let i = 0; i < delta.length; i++) {
       if (newColor[i] + delta[i] >= 0 && newColor[i] + delta[i] <= 255) {

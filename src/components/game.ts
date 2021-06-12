@@ -1,12 +1,12 @@
-import { html, css, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map";
 import { ColorRound } from "../controllers/color-round";
-import { RGBColor } from "../util";
+import { GameColor, RGBColor } from "../util/color";
 
-@customElement("color-game")
-export class ColorGame extends LitElement {
+@customElement("cw-game")
+export class Game extends LitElement {
   static styles = css`
     #outer-div {
       display: flex;
@@ -20,7 +20,6 @@ export class ColorGame extends LitElement {
       right: 0;
     }
     #top {
-      justify-content: flex-end;
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
@@ -28,9 +27,6 @@ export class ColorGame extends LitElement {
       display: none;
     }
     .controls {
-      padding: 5px;
-      background-color: white;
-      white-space: nowrap;
       display: flex;
       justify-content: space-between;
     }
@@ -66,7 +62,7 @@ export class ColorGame extends LitElement {
   }
 
   iterate(e: CustomEvent) {
-    const { delta } = e.detail as { delta: RGBColor };
+    const { delta } = e.detail as { delta: GameColor };
     this.rounds[this.rounds.length - 1].iterate(delta);
     this.scrollingRequested = this.scrolling = false;
     this.forceScrollToBottom();
@@ -143,41 +139,41 @@ export class ColorGame extends LitElement {
             this.rounds,
             // (_, i) => this.rounds.length - i,
             (round, i) =>
-              html`<color-column
-                .targetColor=${round.targetColor}
-                .iterations=${round.iterations}
+              html`<cw-round
+                .targetColor=${round.targetColor as RGBColor}
+                .iterations=${round.iterations as RGBColor[]}
                 .active=${round.active}
                 .gameId=${i + 1}
                 .win=${round.win}
                 .optimalMoves=${round.optimalMoves}
-              ></color-column>`
+              ></cw-round>`
           )}
           <!-- A zero-height div that is always the last element in #top. -->
           <div style=${styleMap({ height: "0px" })}></div>
         </div>
         <div class="controls">
-          <color-buttons
+          <cw-incrementors
             @color-incremented=${this.iterate}
             interval=${this.interval}
             .current=${currentRound.iterations[
               currentRound.iterations.length - 1
             ]}
             ?active=${!currentRound.win}
-          ></color-buttons>
-          <control-panel
+          ></cw-incrementors>
+          <cw-options
             @new-game=${this.startNewGame}
             @about=${() => {
               this.aboutPanelActive = true;
             }}
-          ></control-panel>
+          ></cw-options>
         </div>
       </div>
-      <about-panel
+      <cw-about
         .active=${this.aboutPanelActive}
         @dismissed=${() => {
           this.aboutPanelActive = false;
         }}
-      ></about-panel>
+      ></cw-about>
     `;
   }
 }

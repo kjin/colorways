@@ -1,11 +1,11 @@
-import { html, css, LitElement } from "lit";
-import { styleMap } from "lit/directives/style-map";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
-import { darken, invert, lighten, RGBColor, toCSSColor } from "../util";
+import { styleMap } from "lit/directives/style-map";
+import { darken, invert, lighten, RGBColor, toCSSColor } from "../util/color";
 
-@customElement("color-column")
-export class ColorColumn extends LitElement {
+@customElement("cw-round")
+export class Round extends LitElement {
   static styles = css`
     div {
       background-color: black;
@@ -29,7 +29,7 @@ export class ColorColumn extends LitElement {
   `;
 
   @property({ type: Array })
-  targetColor = [0, 0, 0];
+  targetColor: RGBColor = [0, 0, 0];
   @property({ type: Array })
   iterations: RGBColor[] = [[0, 0, 0]];
   @property({ type: Boolean })
@@ -52,10 +52,10 @@ export class ColorColumn extends LitElement {
       ${repeat(
         this.iterations,
         // (_, i) => this.iterations.length - i,
-        (x) => html`<color-cell .color=${x}></color-cell>`
+        (x) => html`<cw-cell .color=${x}></cw-cell>`
       )}
       <hr />
-      <color-cell id="target-color" .color=${this.targetColor}></color-cell>
+      <cw-cell id="target-color" .color=${this.targetColor}></cw-cell>
       <table
         style=${styleMap({
           color: this.active

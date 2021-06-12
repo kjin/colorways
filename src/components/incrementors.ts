@@ -1,16 +1,13 @@
-import { html, css, LitElement } from "lit";
+import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
+import { trigger } from "../util";
+import { RGBColor } from "../util/color";
 
-@customElement("color-buttons")
-export class ColorButtons extends LitElement {
+@customElement("cw-incrementors")
+export class Incrementors extends LitElement {
   static styles = css`
-    div {
-      display: flex;
-      justify-content: flex-start;
-    }
     :host {
       flex-grow: 1;
-      width: 100%;
     }
   `;
 
@@ -24,7 +21,7 @@ export class ColorButtons extends LitElement {
   active = true;
 
   render() {
-    return html`<div>
+    return html`<cw-container .width=${400} .height=${50}>
       ${[
         [1, 0, 0],
         // [1, 1, 0],
@@ -34,16 +31,20 @@ export class ColorButtons extends LitElement {
         // [1, 0, 1],
       ].flatMap((delta) =>
         [-this.interval, this.interval].map(
-          (interval) => html`<color-button
-            .delta=${delta}
-            intensity=${interval}
+          (interval) => html`<cw-button
+            .color=${delta.map((x) => (x ? 255 : 0)) as RGBColor}
             ?active=${this.active &&
             delta
               .map((y, i) => y * interval + this.current[i])
               .every((y) => y >= 0 && y <= 255)}
-          ></color-button>`
+            @click-down=${() =>
+              trigger(this, "color-incremented", {
+                delta: delta.map((x) => x * interval),
+              })}
+            >${interval > 0 ? "+" : interval < 0 ? "\u2013" : 0}</cw-button
+          >`
         )
       )}
-    </div>`;
+    </cw-container>`;
   }
 }

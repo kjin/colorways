@@ -1,32 +1,33 @@
-import { html, css, LitElement } from "lit";
-import { styleMap } from "lit/directives/style-map";
-import { customElement, property } from "lit/decorators.js";
 import anime from "animejs";
-import { dec2Hex8bit, lighten, toCSSColor } from "../util";
+import { css, html, LitElement } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { styleMap } from "lit/directives/style-map";
+import { legibleLighten, RGBColor, toCSSColor } from "../util/color";
 
-@customElement("color-cell")
-export class ColorCell extends LitElement {
+@customElement("cw-cell")
+export class Cell extends LitElement {
   static styles = css`
-    div {
+    #container {
       display: flex;
-      justify-content: flex-end;
+      justify-content: space-between;
       align-items: center;
       height: 0px;
+      padding: 5px;
       margin: 2px;
       border-radius: 5px;
-      border-width: 1px;
       opacity: 1;
     }
     #hex {
       font-family: "Courier New";
       opacity: 0;
       margin: 8px;
-      font-size: 12px;
+      font-size: 16px;
+      font-weight: bold;
     }
   `;
 
   @property({ type: Array })
-  color = [0, 0, 0];
+  color: RGBColor = [0, 0, 0];
   @property({ attribute: false })
   showHex = false;
 
@@ -37,8 +38,8 @@ export class ColorCell extends LitElement {
       this.initialized = true;
       anime({
         targets: this.renderRoot.querySelector("div"),
-        height: "40px",
-        duration: 750,
+        height: "50px",
+        duration: 500,
         changeBegin: () => {
           this.dispatchEvent(
             new CustomEvent("animation-started", {
@@ -93,7 +94,9 @@ export class ColorCell extends LitElement {
   }
 
   render() {
+    const spacer = html`<cw-spacer></cw-spacer>`;
     return html`<div
+      id="container"
       style=${styleMap({
         "background-color": toCSSColor(this.color),
       })}
@@ -106,9 +109,12 @@ export class ColorCell extends LitElement {
       <span
         id="hex"
         style=${styleMap({
-          color: toCSSColor(lighten(this.color, 0.5, 0.5)),
+          color: toCSSColor(legibleLighten(this.color)),
         })}
         >${toCSSColor(this.color)}</span
+      >
+      <cw-container
+        >${spacer}+${spacer}<cw-button>?</cw-button>${spacer}</cw-container
       >
     </div>`;
   }

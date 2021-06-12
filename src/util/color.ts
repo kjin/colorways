@@ -1,4 +1,6 @@
-export type RGBColor = number[];
+export type GameColor = number[];
+
+export type RGBColor = [number, number, number];
 
 export function intensity(color: RGBColor) {
   return (
@@ -7,29 +9,29 @@ export function intensity(color: RGBColor) {
 }
 
 export function invert(color: RGBColor): RGBColor {
-  return color.map((x) => 255 - x);
+  return color.map((x) => 255 - x) as RGBColor;
 }
 
-export function lighten(
-  color: RGBColor,
-  amount: number,
-  darkenAt = 2
-): RGBColor {
-  if (intensity(color) >= darkenAt) {
-    return darken(color, amount);
-  }
-  return color.map((x) => 255 - Math.ceil((255 - x) * (1 - amount)));
+export function darken(color: RGBColor, mul: number): RGBColor {
+  return color.map((x) => Math.floor(x * (1 - mul))) as RGBColor;
 }
 
-export function darken(
-  color: RGBColor,
-  amount: number,
-  lightenAt = -1
-): RGBColor {
-  if (intensity(color) <= lightenAt) {
-    return lighten(color, amount);
+export function lighten(color: RGBColor, mul: number): RGBColor {
+  return invert(darken(invert(color), mul)) as RGBColor;
+}
+
+export function legibleDarken(color: RGBColor): RGBColor {
+  if (intensity(color) < 0.2) {
+    return legibleLighten(color);
   }
-  return color.map((x) => Math.floor(x * (1 - amount)));
+  return darken(color, 0.8);
+}
+
+export function legibleLighten(color: RGBColor): RGBColor {
+  if (intensity(color) > 0.8) {
+    return legibleDarken(color);
+  }
+  return lighten(color, 0.8);
 }
 
 export function dec2Hex8bit(num: number) {
@@ -43,8 +45,8 @@ export function toCSSColor(color: RGBColor) {
 }
 
 export function computeMoves(
-  source: RGBColor,
-  target: RGBColor,
+  source: GameColor,
+  target: GameColor,
   interval: number
 ): number {
   if ([...source, ...target].some((x) => x % interval !== 0)) {
