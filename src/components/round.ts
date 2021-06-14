@@ -10,7 +10,6 @@ import {
   Move,
   RGBColor,
   toCSSColor,
-  toRGB,
 } from "../util/color";
 
 @customElement("cw-round")
@@ -49,12 +48,15 @@ export class Round extends LitElement {
   win = false;
   @property()
   difficulty: string = "";
+  @property({ type: Boolean })
+  isGray: boolean = false;
   @property({ type: Number })
   gameId = 0;
   @property({ type: Number })
   optimalMoves = 0;
 
   render() {
+    const quote = this.isGray ? '"' : "";
     return html`<div
       style=${styleMap({
         "background-color": this.active
@@ -69,7 +71,7 @@ export class Round extends LitElement {
           let incrementedColor = [0, 0, 0] as RGBColor;
           let symbol = "?";
           if (this.moves.length > i) {
-            incrementedColor = toRGB(this.moves[i].delta);
+            incrementedColor = this.moves[i].rgbColor;
             symbol = getArrow(this.moves[i].direction);
           }
           return html`<cw-cell
@@ -90,7 +92,7 @@ export class Round extends LitElement {
         })}
       >
         <td id="game-title">
-          Game ${this.gameId} -
+          ${quote}Game${quote} ${this.gameId} -
           ${this.difficulty}${this.win
             ? this.optimalMoves === this.iterations.length - 1
               ? ` \ud83d\udc51`

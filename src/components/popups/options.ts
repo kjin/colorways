@@ -1,35 +1,33 @@
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat";
-import { GameOptions } from "../../controllers/options";
+import { GameOptionsController } from "../../controllers/options";
 import { ColorBuilder } from "../../util/color-builder";
 
 @customElement("cw-options")
 export class Options extends LitElement {
-  private color = ColorBuilder.dodgerBlue.faint.bright;
+  private color = ColorBuilder.dodgerBlue.faint.light;
   private buttonColor = ColorBuilder.dodgerBlue.faint.midtone;
 
   static styles = css`
     :host {
-      background-color: black;
       user-select: none;
-      color: cadetblue;
     }
     h1,
-    h2 {
+    h2,
+    p {
       margin: 5px;
     }
     h1 {
       text-align: center;
       font-size: 40px;
-      color: lightcyan;
     }
   `;
 
   @property({ type: Boolean })
   active = true;
   @property({ type: Object })
-  gameOptions: GameOptions | null = null;
+  gameOptions: GameOptionsController | null = null;
   // This is a hack
   @property({ type: Number })
   revision: number = 0;
@@ -40,27 +38,43 @@ export class Options extends LitElement {
     return html` <cw-popup .color=${this.color} .active=${this.active}>
       <h1>Options</h1>
       <h2>Difficulty</h2>
+      <p>${gameOptions.steps.description}</p>
       <cw-container .height=${40} .color=${this.color}>
         ${repeat(
-          gameOptions.difficulty.allowedStringValues,
+          gameOptions.steps.allowedStringValues,
           (value) =>
             html`<cw-button
               .color=${this.buttonColor}
-              @click-down=${() => (gameOptions.difficulty.stringValue = value)}
-              .active=${gameOptions.difficulty.stringValue !== value}
+              @click-down=${() => (gameOptions.steps.stringValue = value)}
+              .active=${gameOptions.steps.stringValue !== value}
               >${value}</cw-button
             >`
         )}
       </cw-container>
       <h2>Color Scale</h2>
+      <p>${gameOptions.scaling.description}</p>
       <cw-container .height=${40} .color=${this.color}>
         ${repeat(
-          gameOptions.linearOrLog.allowedStringValues,
+          gameOptions.scaling.allowedStringValues,
           (value) =>
             html`<cw-button
               .color=${this.buttonColor}
-              @click-down=${() => (gameOptions.linearOrLog.stringValue = value)}
-              .active=${gameOptions.linearOrLog.stringValue !== value}
+              @click-down=${() => (gameOptions.scaling.stringValue = value)}
+              .active=${gameOptions.scaling.stringValue !== value}
+              >${value}</cw-button
+            >`
+        )}
+      </cw-container>
+      <h2>Color Space</h2>
+      <p>${gameOptions.colorSpace.description}</p>
+      <cw-container .height=${40} .color=${this.color}>
+        ${repeat(
+          gameOptions.colorSpace.allowedStringValues,
+          (value) =>
+            html`<cw-button
+              .color=${this.buttonColor}
+              @click-down=${() => (gameOptions.colorSpace.stringValue = value)}
+              .active=${gameOptions.colorSpace.stringValue !== value}
               >${value}</cw-button
             >`
         )}

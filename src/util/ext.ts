@@ -17,8 +17,12 @@ export class OptionValue<T> {
     return this.allowedValues.map((x) => x[0]);
   }
 
-  get internalValue() {
+  get description() {
     return this.allowedValues.find((x) => x[0] === this._stringValue)![1];
+  }
+
+  get internalValue() {
+    return this.allowedValues.find((x) => x[0] === this._stringValue)![2];
   }
 
   constructor(
@@ -27,7 +31,7 @@ export class OptionValue<T> {
       revision: number;
       host: ReactiveControllerHost;
     },
-    private readonly allowedValues: Array<[string, T]>,
+    private readonly allowedValues: Array<[string, string, T]>,
     defaultStringValue: string
   ) {
     this._stringValue = defaultStringValue;

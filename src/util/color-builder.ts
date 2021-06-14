@@ -6,7 +6,7 @@ class LuminosityBuilder {
     private readonly hue: number,
     private readonly saturation: number
   ) {}
-  get bright() {
+  get light() {
     return convert.hsl.rgb([this.hue, this.saturation, 75]);
   }
   get midtone() {

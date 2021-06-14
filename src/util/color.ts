@@ -1,51 +1,50 @@
 import convert from "color-convert";
 
-export type GameColor = number[];
-
 export type HSVColor = [number, number, number];
 
 export type RGBColor = [number, number, number];
 
 export interface Move {
-  delta: GameColor;
+  index: number;
+  rgbColor: RGBColor;
   direction: number;
 }
 
-export interface ColorSpaceOptions {
+export type GameColor = number[];
+
+export type ColorSpace = {
+  basis: RGBColor[];
+  toRGB: (color: GameColor) => GameColor;
+};
+
+export interface GameOptions {
   steps: number;
   scaling: (x: number) => number;
+  colorSpace: ColorSpace;
 }
 
-const identity = (x: number) => x;
-
-export function toRGB(
-  color: GameColor,
-  options: ColorSpaceOptions = { steps: 2, scaling: identity }
-): RGBColor {
-  return color.map((x) =>
-    Math.floor(options.scaling(x / (options.steps - 1)) * 255)
-  ) as RGBColor;
+export function toRGB(color: GameColor, options: GameOptions): RGBColor {
+  return options.colorSpace
+    .toRGB(color.map((x) => x / (options.steps - 1)))
+    .map((x) => Math.floor(options.scaling(x) * 255)) as RGBColor;
 }
 
 export function makeMove(
   color: GameColor,
   move: Move,
-  colorSpace: ColorSpaceOptions
+  gameOptions: GameOptions
 ): GameColor | null {
-  const { delta, direction } = move;
+  const { index, direction } = move;
   if (
-    !color.every(
-      (c, i) =>
-        c + delta[i] * direction >= 0 &&
-        c + delta[i] * direction < colorSpace.steps
+    !(
+      color[index] + direction >= 0 &&
+      color[index] + direction < gameOptions.steps
     )
   ) {
     return null;
   }
   let newColor = [...color];
-  for (let i = 0; i < delta.length; i++) {
-    newColor[i] += delta[i] * direction;
-  }
+  newColor[index] += direction;
   return newColor;
 }
 

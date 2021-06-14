@@ -3,7 +3,7 @@ import { customElement, property } from "lit/decorators.js";
 import { repeat } from "lit/directives/repeat.js";
 import { styleMap } from "lit/directives/style-map";
 import { ColorRound } from "../controllers/color-round";
-import { GameOptions } from "../controllers/options";
+import { GameOptionsController } from "../controllers/options";
 import { makeMove, Move, toRGB } from "../util/color";
 
 @customElement("cw-game")
@@ -39,17 +39,7 @@ export class Game extends LitElement {
   `;
 
   private rounds: ColorRound[] = [];
-  private gameOptions: GameOptions = new GameOptions(this);
-  private moves: Array<Move> = [
-    [1, 0, 0],
-    [0, 1, 0],
-    [0, 0, 1],
-  ].flatMap((delta) =>
-    [-1, 1].map((direction) => ({
-      delta,
-      direction,
-    }))
-  );
+  private gameOptions: GameOptionsController = new GameOptionsController(this);
 
   private scrollingRequested = false;
   private scrolling = false;
@@ -158,13 +148,14 @@ export class Game extends LitElement {
             // (_, i) => this.rounds.length - i,
             (round, i) =>
               html`<cw-round
-                .targetColor=${toRGB(round.targetColor, round.colorSpace)}
+                .targetColor=${toRGB(round.targetColor, round.gameOptions)}
                 .iterations=${round.iterations.map((iteration) =>
-                  toRGB(iteration, round.colorSpace)
+                  toRGB(iteration, round.gameOptions)
                 )}
                 .moves=${round.moves}
                 .active=${round.active}
                 difficulty=${round.difficulty}
+                .isGray=${round.isGray}
                 .gameId=${i + 1}
                 .win=${round.win}
                 .optimalMoves=${round.optimalMoves}
@@ -176,14 +167,22 @@ export class Game extends LitElement {
         <div id="controls-layer-1">
           <cw-primary-controls
             @color-incremented=${this.iterate}
-            .moves=${this.moves.map((move) => ({
-              ...move,
-              valid: !!makeMove(
-                currentRound.iterations[currentRound.iterations.length - 1],
-                move,
-                currentRound.colorSpace
-              ),
-            }))}
+            .moves=${currentRound.gameOptions.colorSpace.basis
+              .flatMap((rgbColor, index) =>
+                [-1, 1].map((direction) => ({
+                  index,
+                  rgbColor,
+                  direction,
+                }))
+              )
+              .map((move) => ({
+                ...move,
+                valid: !!makeMove(
+                  currentRound.iterations[currentRound.iterations.length - 1],
+                  move,
+                  currentRound.gameOptions
+                ),
+              }))}
             ?active=${!currentRound.win}
           ></cw-primary-controls>
           <cw-meta-controls

@@ -2,7 +2,7 @@ import anime from "animejs";
 import { css, html, LitElement } from "lit";
 import { customElement, property } from "lit/decorators.js";
 import { getArrow, trigger } from "../util";
-import { GameColor, Move, toRGB } from "../util/color";
+import { GameColor, Move } from "../util/color";
 
 @customElement("cw-primary-controls")
 export class PrimaryControls extends LitElement {
@@ -53,7 +53,7 @@ export class PrimaryControls extends LitElement {
   render() {
     const buttons = this.moves.map(
       (move) => html`<cw-button
-        .color=${toRGB(move.delta)}
+        .color=${move.rgbColor}
         ?active=${this.active && move.valid}
         @click-down=${() =>
           this.active && trigger(this, "color-incremented", move)}

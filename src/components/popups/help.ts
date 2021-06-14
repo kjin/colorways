@@ -8,9 +8,7 @@ export class Help extends LitElement {
 
   static styles = css`
     :host {
-      background-color: black;
       user-select: none;
-      color: cadetblue;
     }
     h1,
     h2,
@@ -20,7 +18,6 @@ export class Help extends LitElement {
     h1 {
       text-align: center;
       font-size: 40px;
-      color: lightcyan;
     }
     .white {
       color: white;

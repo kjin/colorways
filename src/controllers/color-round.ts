@@ -1,38 +1,46 @@
 import { ReactiveController, ReactiveControllerHost } from "lit";
 import {
-  ColorSpaceOptions,
   computeMoves,
   GameColor,
+  GameOptions,
+  makeMove,
   Move,
 } from "../util/color";
-import { GameOptions } from "./options";
+import { GameOptionsController } from "./options";
 
 export class ColorRound implements ReactiveController {
   host: ReactiveControllerHost;
-  targetColor = [0, 0, 0];
-  iterations: GameColor[] = [[0, 0, 0]];
+  targetColor: GameColor = [];
+  iterations: GameColor[] = [];
   moves: Move[] = [];
   difficulty: string = "";
-  colorSpace: ColorSpaceOptions;
+  isGray: boolean = false;
+  gameOptions: GameOptions;
   optimalMoves = 0;
   win: boolean = false;
   active: boolean = false;
 
-  constructor(host: ReactiveControllerHost, gameOptions: GameOptions) {
+  constructor(
+    host: ReactiveControllerHost,
+    gameOptions: GameOptionsController
+  ) {
     (this.host = host).addController(this);
-    this.colorSpace = gameOptions.getColorSpace();
-    this.difficulty = gameOptions.difficulty.stringValue;
+    this.gameOptions = gameOptions.getSelectedOptions();
+    this.difficulty = gameOptions.steps.stringValue;
+    this.isGray = gameOptions.colorSpace.stringValue === "Grays";
     this.startGame();
   }
 
+  private createColor() {
+    return new Array(this.gameOptions.colorSpace.basis.length)
+      .fill(0)
+      .map((_) => Math.floor(Math.random() * this.gameOptions.steps));
+  }
+
   private startGame() {
-    this.targetColor = [0, 0, 0].map((_) =>
-      Math.floor(Math.random() * this.colorSpace.steps)
-    );
+    this.targetColor = this.createColor();
     while (this.optimalMoves === 0) {
-      this.iterations = [
-        [0, 0, 0].map((_) => Math.floor(Math.random() * this.colorSpace.steps)),
-      ];
+      this.iterations = [this.createColor()];
       this.optimalMoves = computeMoves(this.targetColor, this.iterations[0]);
     }
     this.active = true;
@@ -40,15 +48,12 @@ export class ColorRound implements ReactiveController {
   }
 
   iterate(move: Move) {
-    const { delta, direction } = move;
-    const newColor = [...this.iterations[this.iterations.length - 1]];
-    for (let i = 0; i < delta.length; i++) {
-      if (
-        newColor[i] + delta[i] * direction >= 0 &&
-        newColor[i] + delta[i] * direction < this.colorSpace.steps
-      ) {
-        newColor[i] += delta[i] * direction;
-      }
+    const currentColor = this.iterations[this.iterations.length - 1];
+    const newColor = makeMove(currentColor, move, this.gameOptions);
+    if (!newColor) {
+      throw new Error(
+        `Unexpected invalid move: ${currentColor}, ${move}, ${this.gameOptions}`
+      );
     }
     this.moves.push(move);
     this.win = newColor.every((x, i) => x === this.targetColor[i]);

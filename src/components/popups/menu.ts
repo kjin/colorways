@@ -10,7 +10,6 @@ export class Menu extends LitElement {
 
   static styles = css`
     :host {
-      background-color: black;
       user-select: none;
     }
     h1 {
@@ -33,9 +32,9 @@ export class Menu extends LitElement {
     return html` <cw-popup .color=${this.color} .active=${this.active}>
       <h1>
         Colorways
-        <small><a href="https://github.com/kjin/colorways">v0.0.3</a></small>
+        <small><a href="https://github.com/kjin/colorways">v0.0.4</a></small>
       </h1>
-      <cw-container .height=${40} .color=${this.color}
+      <cw-container .height=${50} .color=${this.color}
         ><cw-button
           @click-down=${() => trigger(this, "new-game")}
           .color=${this.buttonColor}
@@ -43,7 +42,7 @@ export class Menu extends LitElement {
           >New Game</cw-button
         ></cw-container
       >
-      <cw-container .height=${40} .color=${this.color}
+      <cw-container .height=${50} .color=${this.color}
         ><cw-button
           @click-down=${() => trigger(this, "popup-options")}
           .color=${this.buttonColor}
@@ -51,7 +50,7 @@ export class Menu extends LitElement {
           >Options</cw-button
         ></cw-container
       >
-      <cw-container .height=${40} .color=${this.color}
+      <cw-container .height=${50} .color=${this.color}
         ><cw-button
           @click-down=${() => trigger(this, "popup-help")}
           .color=${this.buttonColor}
